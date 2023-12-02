@@ -1,0 +1,496 @@
+
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+    <title>Welcome to autoDoc’s documentation! &#8212; autoDoc 2023_10_11 documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="_static/alabaster.css" />
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
+    <script src="_static/doctools.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <section id="welcome-to-autodoc-s-documentation">
+<h1>Welcome to autoDoc’s documentation!<a class="headerlink" href="#welcome-to-autodoc-s-documentation" title="Permalink to this heading">¶</a></h1>
+<div class="toctree-wrapper compound">
+</div>
+</section>
+<section id="indices-and-tables">
+<h1>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Permalink to this heading">¶</a></h1>
+<ul class="simple">
+<li><p><a class="reference internal" href="genindex.html"><span class="std std-ref">Index</span></a></p></li>
+<li><p><a class="reference internal" href="py-modindex.html"><span class="std std-ref">Module Index</span></a></p></li>
+<li><p><a class="reference internal" href="search.html"><span class="std std-ref">Search Page</span></a></p></li>
+</ul>
+</section>
+<section id="tetrisai-class">
+<h1>TetrisAI Class<a class="headerlink" href="#tetrisai-class" title="Permalink to this heading">¶</a></h1>
+<p>The <cite>TetrisAI</cite> class is the AI component of the Tetris game, designed to predict the best cube moves and rotations to achieve the highest scores.</p>
+<section id="pseudocode">
+<h2>Pseudocode<a class="headerlink" href="#pseudocode" title="Permalink to this heading">¶</a></h2>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Initialize weights for scoring features</span>
+<span class="n">function</span> <span class="n">calculate_score</span><span class="p">(</span><span class="n">game_board</span><span class="p">,</span> <span class="n">tetris_block</span><span class="p">):</span>
+    <span class="n">score</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">for</span> <span class="n">each</span> <span class="n">feature</span> <span class="ow">in</span> <span class="n">features</span><span class="p">:</span>
+        <span class="n">score</span> <span class="o">+=</span> <span class="n">weight</span><span class="p">[</span><span class="n">feature</span><span class="p">]</span> <span class="o">*</span> <span class="n">calculate_feature_value</span><span class="p">(</span><span class="n">game_board</span><span class="p">,</span> <span class="n">tetris_block</span><span class="p">,</span> <span class="n">feature</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">score</span>
+
+<span class="n">function</span> <span class="n">predict_best_move</span><span class="p">(</span><span class="n">game_board</span><span class="p">,</span> <span class="n">current_block</span><span class="p">):</span>
+    <span class="n">best_score</span> <span class="o">=</span> <span class="o">-</span><span class="n">infinity</span>
+    <span class="n">best_rotation</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">best_position</span> <span class="o">=</span> <span class="mi">0</span>
+
+    <span class="k">for</span> <span class="n">each</span> <span class="n">rotation</span> <span class="ow">in</span> <span class="n">possible_rotations</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">each</span> <span class="n">position</span> <span class="ow">in</span> <span class="n">possible_positions</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">has_collision</span><span class="p">(</span><span class="n">game_board</span><span class="p">,</span> <span class="n">current_block</span><span class="p">,</span> <span class="n">rotation</span><span class="p">,</span> <span class="n">position</span><span class="p">):</span>
+                <span class="n">score</span> <span class="o">=</span> <span class="n">calculate_score</span><span class="p">(</span><span class="n">game_board</span><span class="p">,</span> <span class="n">current_block</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">score</span> <span class="o">&gt;</span> <span class="n">best_score</span><span class="p">:</span>
+                    <span class="n">best_score</span> <span class="o">=</span> <span class="n">score</span>
+                    <span class="n">best_rotation</span> <span class="o">=</span> <span class="n">rotation</span>
+                    <span class="n">best_position</span> <span class="o">=</span> <span class="n">position</span>
+
+    <span class="k">return</span> <span class="n">best_rotation</span><span class="p">,</span> <span class="n">best_position</span>
+
+<span class="n">function</span> <span class="n">has_collision</span><span class="p">(</span><span class="n">game_board</span><span class="p">,</span> <span class="n">current_block</span><span class="p">,</span> <span class="n">rotation</span><span class="p">,</span> <span class="n">position</span><span class="p">):</span>
+    <span class="o">//</span> <span class="n">Check</span> <span class="k">if</span> <span class="n">placing</span> <span class="n">the</span> <span class="n">block</span> <span class="n">at</span> <span class="n">the</span> <span class="n">specified</span> <span class="n">rotation</span> <span class="ow">and</span> <span class="n">position</span> <span class="n">results</span> <span class="ow">in</span> <span class="n">a</span> <span class="n">collision</span>
+    <span class="o">//</span> <span class="n">Return</span> <span class="n">true</span> <span class="k">if</span> <span class="n">collision</span><span class="p">,</span> <span class="n">false</span> <span class="n">otherwise</span>
+
+<span class="o">//</span> <span class="n">Main</span> <span class="n">game</span> <span class="n">loop</span>
+<span class="k">while</span> <span class="n">game_not_over</span><span class="p">:</span>
+    <span class="n">current_block</span> <span class="o">=</span> <span class="n">get_next_block</span><span class="p">()</span>
+    <span class="n">best_rotation</span><span class="p">,</span> <span class="n">best_position</span> <span class="o">=</span> <span class="n">predict_best_move</span><span class="p">(</span><span class="n">game_board</span><span class="p">,</span> <span class="n">current_block</span><span class="p">)</span>
+    <span class="n">make_move</span><span class="p">(</span><span class="n">best_rotation</span><span class="p">,</span> <span class="n">best_position</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="relevent-code">
+<h2>Relevent Code:<a class="headerlink" href="#relevent-code" title="Permalink to this heading">¶</a></h2>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">random</span>
+<span class="kn">from</span> <span class="nn">blockData</span> <span class="kn">import</span> <span class="n">BlockData</span>
+<span class="kn">from</span> <span class="nn">blockControl</span> <span class="kn">import</span> <span class="n">BlocksControl</span>
+
+
+<span class="k">class</span> <span class="nc">TetrisAI</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        TetrisAI class for AI-controlled Tetris gameplay.</span>
+
+<span class="sd">        This class defines the TetrisAI and its methods for playing Tetris.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># Define the weights for each feature</span>
+    <span class="n">WEIGHTS</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s1">&#39;landing_height&#39;</span><span class="p">:</span> <span class="o">-</span><span class="mf">5.5500158825082766</span><span class="p">,</span>
+        <span class="s1">&#39;rows_eliminated&#39;</span><span class="p">:</span> <span class="mf">3.4181268101392694</span><span class="p">,</span>
+        <span class="s1">&#39;row_transitions&#39;</span><span class="p">:</span> <span class="o">-</span><span class="mf">3.2178882868487753</span><span class="p">,</span>
+        <span class="s1">&#39;column_transitions&#39;</span><span class="p">:</span> <span class="o">-</span><span class="mf">9.348695305445199</span><span class="p">,</span>
+        <span class="s1">&#39;number_of_holes&#39;</span><span class="p">:</span> <span class="o">-</span><span class="mf">7.899265427351652</span><span class="p">,</span>
+        <span class="s1">&#39;well_sums&#39;</span><span class="p">:</span> <span class="o">-</span><span class="mf">3.3855972247263626</span><span class="p">,</span>
+        <span class="s1">&#39;bumpiness&#39;</span><span class="p">:</span> <span class="o">-</span><span class="mf">2.111</span><span class="p">,</span>
+        <span class="s1">&#39;height_difference&#39;</span><span class="p">:</span> <span class="o">-</span><span class="mf">4.500158825082766</span>
+    <span class="p">}</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">block_data</span><span class="p">:</span> <span class="n">BlockData</span><span class="p">,</span> <span class="n">block_control</span><span class="p">:</span> <span class="n">BlocksControl</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">               Initialize TetrisAI with block data and control.</span>
+
+<span class="sd">               :param block_data: BlockData object containing game data.</span>
+<span class="sd">               :param block_control: BlocksControl object for controlling blocks.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">background</span> <span class="o">=</span> <span class="n">block_data</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">block_control</span> <span class="o">=</span> <span class="n">block_control</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">blocks</span> <span class="o">=</span> <span class="n">block_data</span><span class="o">.</span><span class="n">blocks</span>
+
+    <span class="k">def</span> <span class="nf">calculate_aggregate_height</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">background</span><span class="p">,</span><span class="n">original_data</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Calculate the aggregate height of the current block.</span>
+
+<span class="sd">        :param background: Current game background.</span>
+<span class="sd">        :type background: list of list of int</span>
+<span class="sd">        :param original_data: Original game data before placing the block.</span>
+<span class="sd">        :type original_data: list of list of int</span>
+
+<span class="sd">        :return: Aggregate height of the block.</span>
+<span class="sd">        :rtype: int</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">height</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">Oheight</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">bheight</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">10</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">22</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">):</span>
+                <span class="k">if</span> <span class="n">original_data</span><span class="p">[</span><span class="n">row</span><span class="p">][</span><span class="n">col</span><span class="p">]</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                    <span class="n">Oheight</span> <span class="o">+=</span> <span class="n">row</span>
+                    <span class="k">break</span>
+        <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">10</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">22</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">):</span>
+                <span class="k">if</span> <span class="n">background</span><span class="p">[</span><span class="n">row</span><span class="p">][</span><span class="n">col</span><span class="p">]</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                    <span class="n">bheight</span> <span class="o">+=</span> <span class="n">row</span>
+                    <span class="k">break</span>
+        <span class="n">height</span> <span class="o">=</span> <span class="n">bheight</span><span class="o">-</span><span class="n">Oheight</span>
+        <span class="k">return</span> <span class="n">height</span>
+
+    <span class="k">def</span> <span class="nf">calculate_height_difference</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">background</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">                Calculate the height difference between the highest and lowest points on the game board.</span>
+
+<span class="sd">                :param background: Current game background.</span>
+<span class="sd">                :type background: list of list of int</span>
+
+<span class="sd">                :return: Height difference on the game board.</span>
+<span class="sd">                :rtype: int</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">max_height</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+        <span class="n">min_height</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="s1">&#39;inf&#39;</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">background</span><span class="p">[</span><span class="mi">0</span><span class="p">])):</span>
+            <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">22</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">):</span>
+                <span class="k">if</span> <span class="n">background</span><span class="p">[</span><span class="n">row</span><span class="p">][</span><span class="n">col</span><span class="p">]</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                    <span class="n">max_height</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">max_height</span><span class="p">,</span> <span class="n">row</span><span class="p">)</span>
+                    <span class="n">min_height</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">min_height</span><span class="p">,</span> <span class="n">row</span><span class="p">)</span>
+                    <span class="k">break</span>
+
+        <span class="k">return</span> <span class="n">max_height</span> <span class="o">-</span> <span class="n">min_height</span>
+
+    <span class="k">def</span> <span class="nf">calculate_complete_lines</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">background</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">                Calculate the number of complete lines in the game background.</span>
+
+<span class="sd">                :param background: Current game background.</span>
+<span class="sd">                :type background: list of list of int</span>
+
+<span class="sd">                :return: Number of complete lines.</span>
+<span class="sd">                :rtype: int</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">complete_lines</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">23</span><span class="p">):</span>
+            <span class="k">if</span> <span class="nb">all</span><span class="p">(</span><span class="n">background</span><span class="p">[</span><span class="n">row</span><span class="p">]):</span>
+                <span class="n">complete_lines</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="k">return</span> <span class="n">complete_lines</span>
+
+    <span class="k">def</span> <span class="nf">calculate_holes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">background</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">                Calculate the number of holes in the game background.</span>
+
+<span class="sd">                :param background: Current game background.</span>
+<span class="sd">                :type background: list of list of int</span>
+
+<span class="sd">                :return: Number of holes.</span>
+<span class="sd">                :rtype: int</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">holes</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">rowHoles</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">background</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>  <span class="c1"># Initialize rowHoles with zeros</span>
+
+        <span class="c1"># Start from the second last row since the last row is the bottom of the container</span>
+        <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">background</span><span class="p">)</span><span class="o">-</span><span class="mi">2</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="o">-</span><span class="mi">1</span><span class="p">):</span>
+            <span class="n">currentRowHoles</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">background</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>  <span class="c1"># Initialize currentRowHoles with zeros</span>
+
+            <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">background</span><span class="p">[</span><span class="mi">0</span><span class="p">])):</span>  <span class="c1"># Exclude the first and last columns</span>
+                <span class="c1"># Check if the current position is a hole and the position above it is filled</span>
+                <span class="k">if</span> <span class="n">background</span><span class="p">[</span><span class="n">row</span><span class="p">][</span><span class="n">col</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">and</span> <span class="p">(</span><span class="n">background</span><span class="p">[</span><span class="n">row</span> <span class="o">+</span> <span class="mi">1</span><span class="p">][</span><span class="n">col</span><span class="p">]</span> <span class="o">==</span> <span class="mi">1</span> <span class="ow">or</span> <span class="n">rowHoles</span><span class="p">[</span><span class="n">col</span><span class="p">]</span> <span class="o">==</span> <span class="mi">1</span><span class="p">):</span>
+                    <span class="n">currentRowHoles</span><span class="p">[</span><span class="n">col</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
+                    <span class="n">holes</span> <span class="o">+=</span> <span class="mi">1</span>
+
+            <span class="n">rowHoles</span> <span class="o">=</span> <span class="n">currentRowHoles</span>  <span class="c1"># Update rowHoles for the next iteration</span>
+
+        <span class="k">return</span> <span class="n">holes</span>
+
+    <span class="k">def</span> <span class="nf">calculate_bumpiness</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">background</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">                Calculate the bumpiness score of the game background.</span>
+
+<span class="sd">                :param background: Current game background.</span>
+<span class="sd">                :type background: list of list of int</span>
+
+<span class="sd">                :return: Bumpiness score.</span>
+<span class="sd">                :rtype: int</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">bumpiness</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">previous_height</span> <span class="o">=</span> <span class="mi">0</span>
+
+        <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">background</span><span class="p">[</span><span class="mi">0</span><span class="p">])):</span>
+            <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">background</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">):</span>
+                <span class="k">if</span> <span class="n">background</span><span class="p">[</span><span class="n">row</span><span class="p">][</span><span class="n">col</span><span class="p">]</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                    <span class="n">current_height</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">background</span><span class="p">)</span> <span class="o">-</span> <span class="n">row</span>
+                    <span class="n">bumpiness</span> <span class="o">+=</span> <span class="nb">abs</span><span class="p">(</span><span class="n">current_height</span> <span class="o">-</span> <span class="n">previous_height</span><span class="p">)</span>
+                    <span class="n">previous_height</span> <span class="o">=</span> <span class="n">current_height</span>
+                    <span class="k">break</span>
+
+        <span class="k">return</span> <span class="n">bumpiness</span>
+
+    <span class="k">def</span> <span class="nf">calculate_well_sums</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">background</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">                Calculate the sum of well sums in the game background.</span>
+
+<span class="sd">                :param background: Current game background.</span>
+<span class="sd">                :type background: list of list of int</span>
+
+<span class="sd">                :return: Sum of well sums.</span>
+<span class="sd">                :rtype: int</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">well_sums</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">9</span><span class="p">):</span>  <span class="c1"># Starting at the second column and ending at the penultimate column</span>
+            <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">background</span><span class="p">)):</span>
+                <span class="c1"># Check that the current position is empty and has squares on its left and right sides</span>
+                <span class="k">if</span> <span class="n">background</span><span class="p">[</span><span class="n">row</span><span class="p">][</span><span class="n">col</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">background</span><span class="p">[</span><span class="n">row</span><span class="p">][</span><span class="n">col</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="mi">1</span> <span class="ow">and</span> <span class="n">background</span><span class="p">[</span><span class="n">row</span><span class="p">][</span><span class="n">col</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                    <span class="n">well_sums</span> <span class="o">+=</span> <span class="mi">1</span>
+                    <span class="c1"># Check below the current position until you encounter a square or reach the bottom</span>
+                    <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">row</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">background</span><span class="p">)):</span>
+                        <span class="k">if</span> <span class="n">background</span><span class="p">[</span><span class="n">k</span><span class="p">][</span><span class="n">col</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                            <span class="n">well_sums</span> <span class="o">+=</span> <span class="mi">1</span>
+                        <span class="k">else</span><span class="p">:</span>
+                            <span class="k">break</span>
+        <span class="k">return</span> <span class="n">well_sums</span>
+
+    <span class="k">def</span> <span class="nf">calculate_row_transitions</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">background</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">                Calculate the number of row transitions in the game background.</span>
+
+<span class="sd">                :param background: Current game background.</span>
+<span class="sd">                :type background: list of list of int</span>
+
+<span class="sd">                :return: Number of row transitions.</span>
+<span class="sd">                :rtype: int</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">transitions</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">background</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">):</span>  <span class="c1"># Disregard the last row as it is the bottom of the container</span>
+            <span class="n">last_bit</span> <span class="o">=</span> <span class="mi">0</span>  <span class="c1"># Initialised to 0 for a null position</span>
+            <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">background</span><span class="p">[</span><span class="mi">0</span><span class="p">])):</span>
+                <span class="n">curr_bit</span> <span class="o">=</span> <span class="n">background</span><span class="p">[</span><span class="n">row</span><span class="p">][</span><span class="n">col</span><span class="p">]</span>
+                <span class="k">if</span> <span class="n">curr_bit</span> <span class="o">!=</span> <span class="n">last_bit</span><span class="p">:</span>
+                    <span class="n">transitions</span> <span class="o">+=</span> <span class="mi">1</span>
+                <span class="n">last_bit</span> <span class="o">=</span> <span class="n">curr_bit</span>
+        <span class="k">return</span> <span class="n">transitions</span>
+
+    <span class="k">def</span> <span class="nf">calculate_column_transitions</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">background</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">                Calculate the number of column transitions in the game background.</span>
+
+<span class="sd">                :param background: Current game background.</span>
+<span class="sd">                :type background: list of list of int</span>
+
+<span class="sd">                :return: Number of column transitions.</span>
+<span class="sd">                :rtype: int</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">transitions</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">background</span><span class="p">[</span><span class="mi">0</span><span class="p">])):</span>
+            <span class="n">last_bit</span> <span class="o">=</span> <span class="mi">0</span>  <span class="c1"># Initialised to 0 for a null position</span>
+            <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">background</span><span class="p">)):</span>
+                <span class="n">curr_bit</span> <span class="o">=</span> <span class="n">background</span><span class="p">[</span><span class="n">row</span><span class="p">][</span><span class="n">col</span><span class="p">]</span>
+                <span class="k">if</span> <span class="n">curr_bit</span> <span class="o">!=</span> <span class="n">last_bit</span><span class="p">:</span>
+                    <span class="n">transitions</span> <span class="o">+=</span> <span class="mi">1</span>
+                <span class="n">last_bit</span> <span class="o">=</span> <span class="n">curr_bit</span>
+        <span class="k">return</span> <span class="n">transitions</span>
+
+    <span class="k">def</span> <span class="nf">calculate_score</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">background</span><span class="p">,</span><span class="n">original_data</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">               Calculate the overall score for the game state using the El-Tetris algorithm.</span>
+
+<span class="sd">               :param background: Current game background.</span>
+<span class="sd">               :type background: list of list of int</span>
+<span class="sd">               :param original_data: Original game data before placing the block.</span>
+<span class="sd">               :type original_data: list of list of int</span>
+
+<span class="sd">               :return: Overall game score.</span>
+<span class="sd">               :rtype: float</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">score</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">WEIGHTS</span><span class="p">[</span><span class="s1">&#39;landing_height&#39;</span><span class="p">]</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">calculate_aggregate_height</span><span class="p">(</span><span class="n">background</span><span class="p">,</span><span class="n">original_data</span><span class="p">)</span> <span class="o">+</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">WEIGHTS</span><span class="p">[</span><span class="s1">&#39;rows_eliminated&#39;</span><span class="p">]</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">calculate_complete_lines</span><span class="p">(</span><span class="n">background</span><span class="p">)</span> <span class="o">+</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">WEIGHTS</span><span class="p">[</span><span class="s1">&#39;row_transitions&#39;</span><span class="p">]</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">calculate_row_transitions</span><span class="p">(</span><span class="n">background</span><span class="p">)</span> <span class="o">+</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">WEIGHTS</span><span class="p">[</span><span class="s1">&#39;column_transitions&#39;</span><span class="p">]</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">calculate_column_transitions</span><span class="p">(</span><span class="n">background</span><span class="p">)</span> <span class="o">+</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">WEIGHTS</span><span class="p">[</span><span class="s1">&#39;number_of_holes&#39;</span><span class="p">]</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">calculate_holes</span><span class="p">(</span><span class="n">background</span><span class="p">)</span> <span class="o">+</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">WEIGHTS</span><span class="p">[</span><span class="s1">&#39;well_sums&#39;</span><span class="p">]</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">calculate_well_sums</span><span class="p">(</span><span class="n">background</span><span class="p">)</span> <span class="o">+</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">WEIGHTS</span><span class="p">[</span><span class="s1">&#39;bumpiness&#39;</span><span class="p">]</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">calculate_bumpiness</span><span class="p">(</span><span class="n">background</span><span class="p">)</span> <span class="o">+</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">WEIGHTS</span><span class="p">[</span><span class="s1">&#39;height_difference&#39;</span><span class="p">]</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">calculate_height_difference</span><span class="p">(</span><span class="n">background</span><span class="p">)</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="n">score</span>
+
+    <span class="k">def</span> <span class="nf">predict_best_move</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">background</span><span class="p">,</span> <span class="n">block_ini_position</span><span class="p">,</span> <span class="n">current_block_shape</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">                Predict the best move for the current block based on the game state.</span>
+
+<span class="sd">                :param background: Current game background.</span>
+<span class="sd">                :type background: list of list of int</span>
+<span class="sd">                :param block_ini_position: Initial position of the current block.</span>
+<span class="sd">                :type block_ini_position: list of int</span>
+<span class="sd">                :param current_block_shape: Shape of the current block.</span>
+<span class="sd">                :type current_block_shape: list of tuple</span>
+
+<span class="sd">                :return: List of best moves [rotation, leftOrRightMove, moveDown].</span>
+<span class="sd">                :rtype: list of int</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">best_score</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="s1">&#39;-inf&#39;</span><span class="p">)</span>
+        <span class="n">best_rotation</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">best_position</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">moveDown</span> <span class="o">=</span> <span class="mi">0</span>
+
+        <span class="n">original_data</span> <span class="o">=</span> <span class="p">[</span><span class="n">row</span><span class="p">[:]</span> <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">background</span><span class="p">]</span>
+        <span class="n">original_position</span> <span class="o">=</span> <span class="n">block_ini_position</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+
+        <span class="k">for</span> <span class="n">rotation</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">4</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">position</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">10</span><span class="p">):</span>
+                <span class="n">background</span> <span class="o">=</span> <span class="p">[</span><span class="n">row</span><span class="p">[:]</span> <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">original_data</span><span class="p">]</span>
+                <span class="n">block_ini_position</span> <span class="o">=</span> <span class="n">original_position</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+
+
+                <span class="c1"># Simulate movement to the desired position</span>
+                <span class="k">while</span> <span class="n">block_ini_position</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">!=</span> <span class="n">position</span><span class="p">:</span>
+                    <span class="c1"># Check for collision after moving</span>
+                    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">has_collision</span><span class="p">(</span><span class="n">background</span><span class="p">,</span> <span class="n">block_ini_position</span><span class="p">,</span> <span class="n">current_block_shape</span><span class="p">):</span>
+                        <span class="k">break</span>
+
+                    <span class="k">if</span> <span class="n">position</span> <span class="o">&gt;</span> <span class="n">block_ini_position</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span>
+                        <span class="n">block_ini_position</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">block_ini_position</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-=</span> <span class="mi">1</span>
+
+
+
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">has_collision</span><span class="p">(</span><span class="n">background</span><span class="p">,</span> <span class="n">block_ini_position</span><span class="p">,</span> <span class="n">current_block_shape</span><span class="p">):</span>
+                    <span class="k">continue</span>
+
+                <span class="c1"># Simulate dropping the block</span>
+                <span class="k">while</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">has_collision</span><span class="p">(</span><span class="n">background</span><span class="p">,</span> <span class="n">block_ini_position</span><span class="p">,</span> <span class="n">current_block_shape</span><span class="p">):</span>
+                    <span class="n">block_ini_position</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-=</span> <span class="mi">1</span>
+
+                <span class="c1"># Update the background with the dropped block</span>
+                <span class="k">for</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="ow">in</span> <span class="n">current_block_shape</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="mi">0</span> <span class="o">&lt;=</span> <span class="n">block_ini_position</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">x</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">background</span><span class="p">)</span> <span class="ow">and</span> <span class="mi">0</span> <span class="o">&lt;=</span> <span class="n">block_ini_position</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">y</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span>
+                            <span class="n">background</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
+                        <span class="n">background</span><span class="p">[</span><span class="n">block_ini_position</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">x</span><span class="p">][</span><span class="n">block_ini_position</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">y</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
+
+                <span class="n">score</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">calculate_score</span><span class="p">(</span><span class="n">background</span><span class="p">,</span><span class="n">original_data</span><span class="p">)</span>
+
+                <span class="k">if</span> <span class="n">score</span> <span class="o">&gt;</span> <span class="n">best_score</span><span class="p">:</span>
+                    <span class="n">best_score</span> <span class="o">=</span> <span class="n">score</span>
+                    <span class="n">best_rotation</span> <span class="o">=</span> <span class="n">rotation</span>
+                    <span class="n">best_position</span> <span class="o">=</span> <span class="n">position</span>
+                    <span class="n">moveDown</span> <span class="o">=</span> <span class="n">original_position</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="n">block_ini_position</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+                    <span class="nb">print</span><span class="p">(</span><span class="n">score</span><span class="p">,</span><span class="n">rotation</span><span class="p">)</span>
+
+            <span class="n">current_block_shape</span> <span class="o">=</span> <span class="p">[(</span><span class="n">col</span><span class="p">,</span><span class="o">-</span><span class="n">row</span><span class="p">)</span> <span class="k">for</span> <span class="n">row</span><span class="p">,</span> <span class="n">col</span> <span class="ow">in</span> <span class="n">current_block_shape</span><span class="p">]</span>
+
+        <span class="n">leftOrRightMove</span> <span class="o">=</span> <span class="n">best_position</span> <span class="o">-</span> <span class="mi">5</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">moveDown</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
+            <span class="n">moveDown</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">elif</span> <span class="ow">not</span> <span class="n">moveDown</span><span class="p">:</span>
+            <span class="n">moveDown</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="nb">print</span><span class="p">([</span><span class="n">best_rotation</span><span class="p">,</span> <span class="n">leftOrRightMove</span><span class="p">,</span> <span class="n">moveDown</span><span class="p">])</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;-------------------------------------------------------------&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">best_rotation</span><span class="p">,</span> <span class="n">leftOrRightMove</span><span class="p">,</span> <span class="n">moveDown</span><span class="p">]</span>
+
+    <span class="k">def</span> <span class="nf">has_collision</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">background</span><span class="p">,</span> <span class="n">position</span><span class="p">,</span> <span class="n">shape</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">                Check if there is a collision between the current block and the game background.</span>
+
+<span class="sd">                :param background: Current game background.</span>
+<span class="sd">                :type background: list of list of int</span>
+<span class="sd">                :param position: Position of the current block.</span>
+<span class="sd">                :type position: list of int</span>
+<span class="sd">                :param shape: Shape of the current block.</span>
+<span class="sd">                :type shape: list of tuple</span>
+
+<span class="sd">                :return: True if there is a collision, False otherwise.</span>
+<span class="sd">                :rtype: bool</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">y_drop</span><span class="p">,</span> <span class="n">x_move</span> <span class="o">=</span> <span class="n">position</span>
+        <span class="k">for</span> <span class="n">row</span><span class="p">,</span> <span class="n">col</span> <span class="ow">in</span> <span class="n">shape</span><span class="p">:</span>
+            <span class="n">row</span> <span class="o">+=</span> <span class="n">y_drop</span>
+            <span class="n">col</span> <span class="o">+=</span> <span class="n">x_move</span>
+            <span class="c1"># Check if it is beyond the left, right or lower boundaries</span>
+            <span class="k">if</span> <span class="n">col</span> <span class="o">&lt;</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">col</span> <span class="o">&gt;</span> <span class="mi">9</span> <span class="ow">or</span> <span class="n">row</span> <span class="o">&lt;</span> <span class="mi">1</span> <span class="ow">or</span> <span class="n">row</span> <span class="o">&gt;=</span> <span class="nb">len</span><span class="p">(</span><span class="n">background</span><span class="p">):</span>
+                <span class="k">return</span> <span class="kc">True</span>
+            <span class="c1"># Checks for collisions with other squares in the background</span>
+            <span class="k">if</span> <span class="n">background</span><span class="p">[</span><span class="n">row</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="n">col</span><span class="p">]</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="k">return</span> <span class="kc">True</span>
+        <span class="k">return</span> <span class="kc">False</span>
+</pre></div>
+</div>
+</section>
+</section>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="#">autoDoc</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="#">Documentation overview</a><ul>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2023, Derek.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 5.0.2</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="_sources/index.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

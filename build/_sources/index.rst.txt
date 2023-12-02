@@ -1,0 +1,82 @@
+.. autoDoc documentation master file, created by
+   sphinx-quickstart on Wed Oct 11 00:48:04 2023.
+   You can adapt this file completely to your liking, but it should at least
+   contain the root `toctree` directive.
+
+Welcome to autoDoc's documentation!
+===================================
+
+.. toctree::
+   :maxdepth: 2
+   :caption: Contents:
+
+
+
+Indices and tables
+==================
+
+* :ref:`genindex`
+* :ref:`modindex`
+* :ref:`search`
+
+TetrisAI Class
+==========
+
+.. autoclass:: pythonSchoolProject.TetrisAI
+   :members:
+
+The `TetrisAI` class is the AI component of the Tetris game, designed to predict the best cube moves and rotations to achieve the highest scores.
+
+Methods
+-------
+
+`calculate_aggregate_height(self, background, original_data)`
+    Calculate the aggregate height difference between the background and the original data.
+
+`calculate_height_difference(self, background)`
+    Calculate the height difference between the highest and lowest points of the background.
+
+`calculate_complete_lines(self, background)`
+    Calculate the number of complete lines in the background.
+
+`calculate_holes(self, background)`
+    Calculate the number of holes in the background.
+
+`calculate_bumpiness(self, background)`
+    Calculate the bumpiness of the background.
+
+`calculate_well_sums(self, background)`
+    Calculate the well sums in the background.
+
+`calculate_row_transitions(self, background)`
+    Calculate the number of row transitions in the background.
+
+`calculate_column_transitions(self, background)`
+    Calculate the number of column transitions in the background.
+
+`calculate_score(self, background, original_data)`
+    Calculate the score for a given board state using the El-Tetris algorithm.
+
+`predict_best_move(self, background, block_ini_position, current_block_shape)`
+    Predict the best move (rotation, left/right movement, and downward movement) for the current block on the background.
+
+Attributes
+----------
+
+`WEIGHTS`
+    A dictionary containing weights for each feature used in scoring.
+
+Examples
+--------
+
+Here are some examples of how to use the `TetrisAI` class:
+
+```python
+# Create a TetrisAI instance
+ai = TetrisAI(block_data, block_control)
+
+# Predict the best move for the current block
+best_move = ai.predict_best_move(background, block_ini_position, current_block_shape)
+
+# Calculate the score for the current board state
+score = ai.calculate_score(background, original_data)
